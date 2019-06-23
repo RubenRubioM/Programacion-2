@@ -1,0 +1,23 @@
+
+public class Compilador {
+
+	public static void main(String[] args) {
+		boolean s;
+		double p=2.4;
+		double[] d;
+		d=null;
+		d= new double[2];
+		d[1]=2.3;
+		d[0]=5.1;
+		String ss= "Hola";
+		
+	
+		Mercancia m1 = new Mercancia(p,d);
+		s=m1.almacena(ss);
+		
+		
+		
+		
+	}
+
+}

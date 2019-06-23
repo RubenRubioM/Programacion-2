@@ -1,0 +1,21 @@
+package udemy;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+public class aritmeticos {
+
+	public static void main(String[] args) throws IOException {
+		int horas,minutos;
+
+		
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		System.out.print("Dime la hora: ");
+		horas = Integer.parseInt(br.readLine());
+		System.out.println("Dime los minutos: ");
+		minutos = Integer.parseInt(br.readLine());
+		
+	}
+
+}

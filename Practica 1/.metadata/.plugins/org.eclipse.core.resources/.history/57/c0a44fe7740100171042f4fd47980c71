@@ -1,0 +1,68 @@
+
+public class Compilador {
+
+	public static void main(String[] args) {
+		int i,j,k;
+		i=1;
+		j=2;
+		k=3;
+		int[] coordenada;
+		coordenada= new int[3];
+		double p=2.5;
+		double p2= 4.5;
+		double[] d;
+		d=null;
+		d=new double[4];
+		d[0]=2.42;
+		d[1]=5.44;
+		double[] d2;
+		d2=null;
+		d2=new double[2];
+		
+		int[] coor;
+		coor=new int[3];
+		String agua = "Agua";
+		int n=5;
+		boolean res;
+		String etiqueta;
+		
+		int[][][] espacio;
+		espacio=null;
+		espacio=new int [2][3][4];
+	
+		int[] dimension;
+		dimension=null;
+		dimension=new int[3];
+		
+		Coordenada c = new Coordenada(i,j,k);
+		Mercancia m = new Mercancia(p,d);
+		Mercancia m2 = new Mercancia(p2,d2);
+		Sector s = new Sector(n);
+		Sector s2 = new Sector(n);
+		Galaxia g = new Galaxia("Via lactea",i,j,k);
+		s.situa(i, j, k);
+		c=s.getCoordenada();
+		int sumatorio=0;
+		dimension=c.getCoordenadas();
+		
+		for (int l = 0; l < espacio.length; l++) {
+			for (int l2 = 0; l2 < espacio[1].length; l2++) {
+				for (int o = 0; o < espacio[1][1].length; o++) {
+					espacio[l][l2][o]=sumatorio;
+					sumatorio++;
+				}
+			}
+		}
+		
+		Romskip r=new Romskip("Hola",1,1.5);
+		r.setMapa(g);
+		System.out.println(d.length);
+		System.out.println(d2.length);
+		d=d2;
+		System.out.println(d.length);
+		
+	}
+
+}
+
+

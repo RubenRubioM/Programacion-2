@@ -1,0 +1,7 @@
+
+public class Compilador {
+
+	public static void main(String[] args) {
+		Mercancia m = new Mercancia();
+
+}

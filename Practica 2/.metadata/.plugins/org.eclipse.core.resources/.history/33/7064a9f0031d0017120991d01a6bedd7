@@ -1,0 +1,213 @@
+//DNI 20084606 Rubio Martinez, Ruben
+public class Skrogem extends Mercancia{
+	 private Dophraki nave;
+	 private double especia;
+	 private Navegante huesped;
+	 private static Navegante[] huespedes=new Navegante[10];
+	 
+	 //constructor
+	 public Skrogem(double p,double[] d,double e){
+		 super(p,d);
+		 
+		 if(e>0){
+			 especia=e;
+		 }else{
+			 especia=5.5;
+		 }
+		 
+		 nave=null;
+		 huesped=null;
+	 }
+	 
+	 
+	 //done but maybe not
+	 public boolean almacena(Romskip r){
+		 boolean devolucion=false;
+		
+		 if(r!=null){
+			 if(this.getAlmacenada()==false){
+					setAlmacenada(true);
+					setEtiqueta(r.getNombre()+Double.toString(this.getPeso()));
+					devolucion=true;
+		 
+					if(r instanceof Dophraki){
+						nave=(Dophraki) r;
+					}else{
+						nave=null;	
+					}
+			}
+		 }
+		
+		 return devolucion;
+	 }
+	 
+	 
+	 //done i think
+	 public boolean recogida(){
+		 boolean devolucion=false;
+		 
+		 if(super.getAlmacenada()==true){
+			 super.setAlmacenada(false);
+			 nave=null;
+			 devolucion=true;
+		 }
+		 
+		 return devolucion;
+	 }
+	 
+	 
+	 //done - no muy claro
+	 public boolean busca(){
+		 boolean devolucion=false;
+		 boolean tiene_skrogem=false;
+		 boolean hay_espacio=false;
+		 int posicion=0;
+		 
+		 if(nave!=null){
+			 if(huesped==null){
+				 for (int i = 0; i < huespedes.length; i++) {
+						if(huespedes[i]==null){
+							hay_espacio=true;
+							posicion=i;
+						}
+					}
+					
+				for (int i = 0; i < huespedes.length; i++) {
+					System.out.println(huespedes[i].getNombre());
+				} 
+				 
+				for (int i = 0; i < nave.getPasaje().length; i++) {
+					if(nave.getPasaje()[i]!=null){
+						for (int j = 0; j < huespedes.length; j++) {		
+							//comprobante de no tener mas de un Skrogem
+							if(huespedes[j]!=null){
+								if(nave.getPasaje()[i].iguales(huespedes[j])){
+									tiene_skrogem=true;
+								}
+							}
+							
+							
+							
+						}
+						
+						if(!tiene_skrogem){
+							if(!hay_espacio){
+								huespedes=new Navegante[huespedes.length+10];
+								huesped=nave.getPasaje()[i];
+								huespedes[huespedes.length-10]=nave.getPasaje()[i];
+								i=nave.getPasaje().length;
+								devolucion=true;
+							}else{
+								huesped=nave.getPasaje()[i];
+								huespedes[posicion]=nave.getPasaje()[i];
+								i=nave.getPasaje().length;
+								devolucion=true;
+							}
+						}
+					}
+				}
+				
+				
+				
+				
+			 }
+		 }
+		 
+		 
+		 
+		 return devolucion;
+	 }
+	 
+	 
+	 //done
+	 public double activa(){
+		 double devolucion=0;
+		 
+		 if(huesped!=null){
+			 if(huesped.getEspecia()==0){
+				 for (int i = 0; i < huespedes.length; i++) {
+					if(huesped.iguales(huespedes[i])){
+						huespedes[i]=null;
+						huesped=null;
+					}
+				}
+			 }
+			 
+			 if(huesped.getEspecia()>4){
+				 huesped.setEspecia(huesped.getEspecia()*0.25);
+				 devolucion=huesped.getEspecia()*0.25;
+				 especia=especia+devolucion;
+			 }
+			 if(huesped.getEspecia()>4 && huesped.getEspecia()>0){
+				 huesped.setEspecia(huesped.getEspecia());
+				 devolucion=huesped.getEspecia();
+				 especia=especia+devolucion;
+			 }
+		 }
+		 
+		 return devolucion;
+	 }
+	 
+	 
+	 //done
+	 public double eliminado(){
+		 double devolucion=0;
+		 
+		 if(huesped!=null){
+			 for (int i = 0; i < huespedes.length; i++) {
+				 if(huespedes[i]!=null){
+					 if(huesped.iguales(huespedes[i])){
+							devolucion=especia;
+							especia=0;
+							huesped=null;
+							huespedes[i]=null;
+						}
+				 }
+			}
+		 }
+		 
+		 
+		 return devolucion;
+	 }
+ 
+	 
+	 //done
+	 public double getEspecia(){
+		 return especia;
+	 }
+	 
+	 
+	 //done
+	 public Navegante getHuesped(){
+		 return huesped;
+	 }
+	 
+	 
+	 //done
+	 public Dophraki getNave(){
+		 return nave;
+	 }
+	 
+	 
+	 //done
+	 public static Navegante[] getHuespedes(){
+		 return huespedes;
+	 }
+	 
+	 
+	 public void setEspecia(double d){
+		 this.especia=especia-d;
+	 }
+ 
+	 
+	 
+	 public void setHuesped(Navegante n){
+		 huesped=n;
+	 }
+	 
+	 
+	 public void setNave(Dophraki d){
+		 nave=d;
+	 }
+	  
+}

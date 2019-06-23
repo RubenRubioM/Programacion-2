@@ -1,0 +1,13 @@
+package practica;
+
+public class practica {
+
+	public static void main(String[] args) {
+		Alumno a = new Alumno();
+		Libro l = new Libro();
+		a.setNombre("Ruben");
+		l.abrir();
+		System.out.println(a.getNombre());
+	}
+
+}

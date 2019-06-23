@@ -1,0 +1,23 @@
+
+public class Compilador {
+
+	public static void main(String[] args) {
+		int i,j,k;
+		i=2;
+		j=3;
+		k=5;
+		int[] coordenada;
+		coordenada= new int[3];
+		
+		
+		Coordenada c = new Coordenada(i,j,k);
+		coordenada=c.getCoordenadas();
+		
+		for (int l = 0; l < coordenada.length; l++) {
+			System.out.println(coordenada[i]);
+		}
+		
+		
+	}
+
+}

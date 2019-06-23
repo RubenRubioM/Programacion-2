@@ -1,0 +1,30 @@
+
+public class Compilador {
+
+	public static void main(String[] args) {
+		boolean s;
+		double p=2.5;
+		double p2=-3;
+		double[] d;
+		d=null;
+		d= new double[2];
+		d[1]=2.4;
+		d[0]=5.1;
+		String ss= "Hola";
+		
+		
+	
+		Mercancia m1 = new Mercancia(p,d);
+		Mercancia m2 = new Mercancia(p2,d);
+		Mercancia m3 = new Mercancia();
+		m1.almacena(ss);
+		m2.almacena(ss);
+		
+		m3=m1.duplicado();
+		
+		System.out.println(m3.getPeso());
+		
+		
+	}
+
+}

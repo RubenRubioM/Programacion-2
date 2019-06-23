@@ -1,0 +1,196 @@
+//DNI 20084606 Rubio Martinez, Ruben
+public class Navegante {
+	private String nombre;
+	private double especia;
+	private double tempo;
+	private double cosecha;
+	private int pasaje;
+	
+	//constructor
+	public Navegante(String n,double d){
+		nombre=n;
+		if(d>0){
+			especia=d;
+		}else{
+			especia=7.5;
+		}
+		tempo=0;
+		cosecha=0;
+		pasaje=-1;
+		
+	}
+	
+	
+	//done?
+	public Mercancia trabaja(Mercancia m,double t){
+		double[] d;
+		d=new double[2];
+		d[1]=1;
+		d[0]=1;
+		Mercancia devolucion=new Mercancia(0,d);
+		devolucion=null;
+		if(t>0){
+			tempo=tempo+t;
+			
+			if(m instanceof Skrogem){
+				
+				cosecha=((Skrogem) m).getEspecia();
+				((Skrogem) m).setEspecia(((Skrogem) m).getEspecia());
+				devolucion=m.duplicado();
+				((Skrogem) m).eliminado();
+			
+			}else{
+				devolucion=m;
+			}
+		}
+		
+		return devolucion;
+	}
+	
+	
+	//done
+	public double cobra(){
+		double tarifa=0;
+		double sueldo=0;
+		double devolucion=cosecha;
+		if(cosecha>0){
+			tarifa=especia/cosecha;
+		}
+		
+		sueldo=tarifa*tempo;
+		
+		especia=especia+sueldo;
+		tempo=0;
+		cosecha=0;
+		devolucion=devolucion-sueldo;
+		
+		return devolucion;
+		
+	}
+	
+	
+	//done asegurado
+	public boolean embarca(Dophraki n){
+		boolean devolucion=false;
+		int pasaje_set=0;
+		
+		pasaje_set=n.embarque(this);
+		
+		if(n!=null){
+			if(getPasaje()==-1){
+				if(pasaje_set>=0){
+					
+					setPasaje(pasaje_set);
+					devolucion=true;
+					
+				}
+			}
+		}
+		
+		return devolucion;
+	}
+	
+	
+	//done?? dudo con los this pero bueno
+	public boolean desembarca(Dophraki n){
+		boolean devolucion=false;
+		
+		if(n!=null){
+			if(n.desembarque(this.pasaje, this)){
+				devolucion=true;
+			}
+		}
+			
+		return devolucion;
+	}
+	
+	
+	//done
+	public double paga(double d){
+		double devolucion=0;
+
+		if(d>0){
+			if(especia>=d){
+				especia=especia-d;
+				devolucion=d;
+			}else{
+				devolucion=0.0;
+			}
+		}else{
+			devolucion=-1.0;
+		}
+		
+		return devolucion;
+	}
+	
+	
+	//done
+	public String getNombre(){
+		return nombre;
+	}
+	
+	
+	//done
+	public double getEspecia(){
+		return especia;
+	}
+	
+	
+	//done
+	public double getTempo(){
+		return tempo;
+	}
+	
+	
+	//done
+	public double getCosecha(){
+		return cosecha;
+	}
+	
+	
+	//done
+	public int getPasaje(){
+		return pasaje;
+	}
+	
+	
+	//done
+	public void setPasaje(int pasaje_set){
+		this.pasaje=pasaje_set;
+	}
+	
+	
+	//done
+	public boolean iguales(Navegante n){
+		boolean devolucion=false;
+		
+		
+		if(this.getNombre().equalsIgnoreCase(n.getNombre())){
+			System.out.println(n.getNombre());
+			System.out.println(this.getNombre());
+			if(n.getEspecia()==this.getEspecia()){
+				System.out.println(n.getEspecia());
+				System.out.println(this.getEspecia());
+				if(n.getTempo()==this.getTempo()){
+					System.out.println(n.getTempo());
+					System.out.println(this.getTempo());
+					if(n.getCosecha()==this.getCosecha()){
+						System.out.println(n.getCosecha());
+						System.out.println(this.getCosecha());
+						if(n.getPasaje()==this.getPasaje()){
+							System.out.println(n.getPasaje());
+							System.out.println(this.getPasaje());
+							devolucion=true;
+						}
+					}
+				}
+			}
+		}
+		return devolucion;
+	}
+	
+	
+	public void setEspecia(double d){
+		this.especia=especia-d;
+	}
+}

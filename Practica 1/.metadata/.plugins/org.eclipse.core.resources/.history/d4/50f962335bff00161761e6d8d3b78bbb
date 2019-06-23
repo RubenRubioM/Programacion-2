@@ -1,0 +1,101 @@
+
+public class Romskip {
+	private String nombre;
+	private Mercancia[] bodega;
+	private double carga;
+	private static Galaxia mapa;
+	
+	
+	public Romskip(String n,int i,double x){
+		
+		nombre=n;
+		
+		if(i<=0){
+			i=3;
+		}
+		bodega=null;
+		bodega=new Mercancia[i];
+		
+		if(x<=0){
+			carga=8.5;
+		}else{
+			carga=x;
+		}	
+	}
+	
+	public static String getNombreMapa(){
+		return mapa.getNombre();
+	}
+	
+	public static void setMapa(Galaxia g){
+		mapa = g;
+	}
+	
+	public static boolean hayAgujerosNegros(){
+		int agujeros = 0;
+		boolean devolucion = false;
+		
+		agujeros = mapa.getAgujerosNegros();
+		
+		if(agujeros>0){
+			devolucion = true;
+		}else{
+			devolucion = false;
+		}
+		
+		return devolucion;
+	}
+	
+	public String embarque(String s,Coordenada c){
+		String devolucion="";
+		boolean existe_mercancia=false;
+		Sector[][][] espacio = mapa.getEspacio();
+		int i2=0,j2=0,k2=0,l2=0;
+		String[] etiqueta=null;
+		//Ciclos para detectar el sector de la galaxia que coincida con esas coordenadas
+		for (int i = 0; i < espacio.length; i++) {
+			for (int j = 0; j < espacio[1].length; j++) {
+				for (int k = 0; k < espacio[1][1].length; k++) {
+					if(c.getCoordenadas()[0]==espacio[i][j][k].getCoordenada().getCoordenadas()[0]
+						&& (c.getCoordenadas()[1]==espacio[i][j][k].getCoordenada().getCoordenadas()[1])
+						&& (c.getCoordenadas()[2]==espacio[i][j][k].getCoordenada().getCoordenadas()[2])){
+							
+							i2=i;
+							j2=j;
+							k2=k;
+							etiqueta=espacio[i][j][k].disponibilidad();
+							//Ciclo para detectar la etiqueta de ese sector que coincida con la pasada
+							for (int l = 0; l < etiqueta.length; l++) {
+								if(s.equalsIgnoreCase(etiqueta[l])){
+									int l2=l;
+									existe_mercancia=true;
+								}
+							}
+					}
+				}
+			}
+		}
+		
+		if(existe_mercancia){
+			Mercancia[] mercancias=null;
+			mercancias=espacio[i2][j2][k2].getAlmacen();
+			boolean espacio_libre=false;
+			int posicion_mercancia=0;
+			//Buscamos la mercancia almacenada en el almacen del sector
+			for (int i = 0; i < mercancias.length; i++) {
+				if(etiqueta[l2].equalsIgnoreCase(mercancias[i].getEtiqueta())){
+					
+				}
+			}
+			for (int i = 0; i < bodega.length; i++) {
+				if(bodega[i]==null){
+					espacio_libre=true;
+				}
+			}
+		}
+		
+		
+	}
+	
+	
+}

@@ -1,0 +1,77 @@
+
+public class Romskip {
+	private String nombre;
+	private Mercancia[] bodega;
+	private double carga;
+	private static Galaxia mapa;
+	
+	
+	public Romskip(String n,int i,double x){
+		
+		nombre=n;
+		
+		if(i<=0){
+			i=3;
+		}
+		bodega=null;
+		bodega=new Mercancia[i];
+		
+		if(x<=0){
+			carga=8.5;
+		}else{
+			carga=x;
+		}	
+	}
+	
+	public static String getNombreMapa(){
+		return mapa.getNombre();
+	}
+	
+	public static void setMapa(Galaxia g){
+		mapa = g;
+	}
+	
+	public static boolean hayAgujerosNegros(){
+		int agujeros = 0;
+		boolean devolucion = false;
+		
+		agujeros = mapa.getAgujerosNegros();
+		
+		if(agujeros>0){
+			devolucion = true;
+		}else{
+			devolucion = false;
+		}
+		
+		return devolucion;
+	}
+	
+	public String embarque(String s,Coordenada c){
+		String devolucion="";
+		boolean existe_mercancia=false;
+		Sector[][][] espacio = mapa.getEspacio();
+		
+		//Ciclos para detectar el sector de la galaxia que coincida con esas coordenadas
+		for (int i = 0; i < espacio.length; i++) {
+			for (int j = 0; j < espacio[1].length; j++) {
+				for (int k = 0; k < espacio[1][1].length; k++) {
+					if(c.getCoordenadas()[0]==espacio[i][j][k].getCoordenada().getCoordenadas()[0]
+						&& (c.getCoordenadas()[1]==espacio[i][j][k].getCoordenada().getCoordenadas()[1])
+						&& (c.getCoordenadas()[2]==espacio[i][j][k].getCoordenada().getCoordenadas()[2])){
+							String[] etiqueta=null;
+							etiqueta=espacio[i][j][k].disponibilidad();
+							//Ciclo para detectar la etiqueta de ese sector que coincida con la pasada
+							for (int l = 0; l < etiqueta.length; l++) {
+								if(s.equalsIgnoreCase(etiqueta[l])){
+									existe_mercancia=true;
+								}
+							}
+						
+					}
+				}
+			}
+		}
+	}
+	
+	
+}

@@ -1,0 +1,8 @@
+
+public class Coordenada {
+	private int i;
+	private int j;
+	private int k;
+	
+	public Coordenada(int i, int j, int k);
+}

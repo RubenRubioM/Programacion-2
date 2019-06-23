@@ -1,0 +1,608 @@
+//DNI 20084606 Rubio Martinez, Ruben
+public class Dophraki extends Romskip{
+	private Navegante[] pasaje;
+	private Tripulante[] tripulacion;
+	private Coordenada posicion;
+	private double especia;
+	private static Galaxia mapa;
+	
+	//constructor
+	public Dophraki(String n,int i,double x,int j,int k,double e){
+		
+		super(n,i,x);
+		
+		if(j>=3){
+			pasaje=new Navegante[j];
+		}
+		if(k>=1){
+			tripulacion=new Tripulante[k];
+		}
+		if(e>=3.5){
+			especia=e;
+		}
+		posicion=new Coordenada(0,0,0);
+		
+	}
+	
+	
+	//done - maybe bugs
+	public String embarque(String s,Coordenada c){
+		String devolucion=null;
+		
+		//aqui hay un problema porque nunca entra
+		if((c.getCoordenadas()[0]==posicion.getCoordenadas()[0]) && (c.getCoordenadas()[1]==posicion.getCoordenadas()[1]) &&
+		   (c.getCoordenadas()[2]==posicion.getCoordenadas()[2])){
+			
+			if(mapa!=null){
+				boolean existe_mercancia=false;
+				Sector[][][] espacio = null;
+				espacio=mapa.getEspacio();
+				int i2=0,j2=0,k2=0,l2=0;
+				String[] etiqueta=null;
+				
+				//Ciclos para detectar el sector de la galaxia que coincida con esas coordenadas
+				
+				for (int i = 0; i < espacio.length; i++) {
+					for (int j = 0; j < espacio[0].length; j++) {
+						for (int k = 0; k < espacio[0][0].length; k++) {
+							
+							if(espacio[i][j][k]!=null){
+								Coordenada coordenadas=null;
+								coordenadas=espacio[i][j][k].getCoordenada();
+								int[] coordenada=null;
+								coordenada=coordenadas.getCoordenadas();
+							
+							
+								if(c.getCoordenadas()[0]==espacio[i][j][k].getCoordenada().getCoordenadas()[0]
+									&& (c.getCoordenadas()[1]==espacio[i][j][k].getCoordenada().getCoordenadas()[1])
+									&& (c.getCoordenadas()[2]==espacio[i][j][k].getCoordenada().getCoordenadas()[2])){
+										
+										i2=i;
+										j2=j;
+										k2=k;
+										
+										etiqueta=espacio[i][j][k].disponibilidad();
+										
+										
+										//Ciclo para detectar la etiqueta de ese sector que coincida con la pasada
+										for (int l = 0; l < etiqueta.length; l++) {
+											if(s.equalsIgnoreCase(etiqueta[l])){
+												l2=l;
+												existe_mercancia=true;
+												i=espacio.length;
+												j=espacio[0].length;
+												k=espacio[0][0].length;
+												
+												
+											}
+										}
+								}
+							}
+						}
+					}
+				}
+				
+				// no tengo claro esto de aqui, preguntaselo a Alicia
+				
+				Mercancia[] bodega;
+				bodega=new Mercancia[super.getBodegaLength()];
+				bodega=super.getBodega();
+				
+				if(existe_mercancia){
+					Mercancia[] mercancias=null;
+					mercancias=espacio[i2][j2][k2].getAlmacen();
+					boolean espacio_libre=false;
+					int posicion_mercancia_almacen=0;
+					int posicion_mercancia=0;
+					
+					//Buscamos la mercancia almacenada en el almacen del sector
+					for (int i = 0; i < mercancias.length; i++) {
+						if(mercancias[i]!=null && etiqueta[l2].equalsIgnoreCase(mercancias[i].getEtiqueta())){
+							posicion_mercancia_almacen=i;
+						}
+					}
+					
+					//ultima posicion de la bodega
+					for (int i = 0; i < bodega.length; i++) {
+						if(bodega[i]==null){
+							espacio_libre=true;
+							posicion_mercancia=i;
+							
+						}
+					}
+						
+					//Recogemos la mercancia y la guardamos en la bodega
+					if(espacio_libre){
+						for (int i = 0; i < bodega.length; i++) {
+							if(bodega[i]==null && i==posicion_mercancia){
+								bodega[posicion_mercancia]=espacio[i2][j2][k2].recoge(s);
+								if(bodega[posicion_mercancia] instanceof Skrogem){
+									((Skrogem) bodega[posicion_mercancia]).almacena(this);
+									
+								}else{
+									bodega[posicion_mercancia].almacena(this);
+								}
+								
+								
+								i=bodega.length;
+								
+								devolucion=bodega[posicion_mercancia].getEtiqueta()+": mercancia embarcada";
+							}
+						}
+					}else{
+						devolucion=s+": bodega de carga completa";
+					}
+					
+				}else{
+					devolucion=s+": mercancia no encontrada";
+				}
+			}
+			
+		}else{
+			devolucion=Integer.toString(c.getCoordenadas()[0])+" "+Integer.toString(c.getCoordenadas()[1])+" "+Integer.toString(c.getCoordenadas()[2])+": emplazamiento incorrecto";
+		}
+		
+		return devolucion;
+	}
+	
+	
+	//same problem, i dont know if i have to create a bodega and do super.getbodega
+	public Mercancia desembarque(String s){
+		Mercancia devolucion=null;
+		Mercancia[] bodega;
+		bodega=new Mercancia[super.getBodegaLength()];
+		bodega=super.getBodega();
+		for (int i = 0; i < bodega.length; i++) {
+			if(bodega[i].getEtiqueta().equalsIgnoreCase(s)){
+				devolucion=bodega[i];
+				bodega[i]=null;
+				i=bodega.length;
+			}
+		}
+		
+		return devolucion;
+	}
+	
+	
+	//todo - falta la parte de Skrogem
+	public boolean teletransporte(Romskip r,int i){
+		boolean devolucion=false;
+		int posicion=-1;
+		
+		//teleporta al pasajero de esa posicion
+		if(r instanceof Dophraki){
+			if(((Dophraki) r).verifica(pasaje[i])!=-1){
+				devolucion=true;
+				posicion=((Dophraki) r).verifica(pasaje[i]);
+				((Dophraki) r).setPasaje(pasaje[i], posicion);
+				pasaje[i].setPasaje(-1);
+				pasaje[i]=null;
+				
+			}
+		
+		//teleporta la mercancia de la bodega	
+		
+		}else{
+			if(super.getBodega()[i]!=null){
+				//es un Skrogem
+				if(super.getBodega()[i] instanceof Skrogem){
+					if(r.verifica(super.getBodega()[i])){
+						((Skrogem) super.getBodega()[i]).setHuesped(null);
+						devolucion=true;
+					}
+					
+				//es una mercancia	
+				}else{
+					if(r.verifica(super.getBodega()[i])){
+						devolucion=true;
+					}
+					
+				}
+			}
+		}
+		return devolucion;
+		}
+			
+
+	
+	//todo - need how to know if a mercancia is a skrogem
+	public boolean verifica(Mercancia m){
+		boolean devolucion=false;
+		boolean espacio_libre=false;
+		int posicion_mercancia=0;
+		Mercancia[] bodega;
+		bodega=new Mercancia[super.getBodegaLength()];
+		bodega=super.getBodega();
+		
+		for (int i = 0; i < bodega.length; i++) {
+			if(bodega[i]==null){
+				espacio_libre=true;
+				posicion_mercancia=i;
+				
+			}
+		}
+			
+		//hacer la parte de almacenar con comprobante de si es skrogem y tal
+		if(m instanceof Skrogem){
+			m.almacena(this);
+			
+			if(!espacio_libre){
+				bodega=new Mercancia[bodega.length+5];
+				bodega[posicion_mercancia+5]=m;
+			}else{
+				bodega[posicion_mercancia]=m;
+			}
+			devolucion=true;
+		}else{
+			//para detectar la ultima posicion de la bodega
+			
+			if(!espacio_libre){
+				bodega=new Mercancia[bodega.length+5];
+				bodega[posicion_mercancia+5]=m;
+			}else{
+				bodega[posicion_mercancia]=m;
+			}
+			devolucion=true;
+		}
+		
+		
+		return devolucion;
+	}
+	
+	
+	//duda con como almacenar
+	public String embarque(Mercancia m){
+		String devolucion=null;
+		boolean existe=false;
+		boolean espacio_libre=false;
+		int posicion_mercancia=0;
+		Mercancia[] bodega;
+		bodega=new Mercancia[super.getBodegaLength()];
+		bodega=super.getBodega();
+		
+		if(m!=null){
+			for (int i = 0; i < bodega.length; i++) {
+				if(bodega[i]!=null){
+					if(bodega[i].iguales(m)){
+						existe=true;
+					}
+				}
+				if(bodega[i]==null){
+					espacio_libre=true;
+					posicion_mercancia=i;
+					
+				}
+			}
+			
+			if(existe){
+				devolucion=m.getEtiqueta()+": mercancia ya almacenada";
+			}
+			if(!espacio_libre){
+				devolucion=m.getEtiqueta()+": bodega de carla completa";
+			}
+			
+			//No tengo claro si se almacena asi
+			
+			if(!existe && espacio_libre){
+				for (int i = 0; i < bodega.length; i++) {
+					if(bodega[i]==null && i==posicion_mercancia){
+						bodega[posicion_mercancia]=m;
+						bodega[posicion_mercancia].almacena(this);
+						i=bodega.length;
+						devolucion=m.getEtiqueta()+": mercancia embarcada";
+					}
+				}
+			}
+		}
+		
+		return devolucion;
+	}
+	
+	
+	//done asegurado
+	public int embarque(Navegante n){
+		int devolucion=0;
+		boolean hay_espacio=false;
+		int posicion=0;
+		double precio=0.0;
+		
+		
+		if(n!=null){
+			if(n.getPasaje()!=-1){
+				devolucion=-1;
+			}else{
+				for (int i = 0; i < pasaje.length; i++) {
+					if(pasaje[i]==null){
+						hay_espacio=true;
+						posicion=i;
+						i=pasaje.length;
+					}
+				}
+				
+				//No hay espacio en el pasaje[]
+				if(hay_espacio==false){
+					devolucion=-2;
+				}else{
+					double posr=posicion+1;
+					precio=(((pasaje.length)/(posr))+this.getNumNavegantes());
+					
+					//si es tripulante precio=precio*.7
+					if(n instanceof Tripulante==true){
+						
+						precio=precio*0.7;
+						
+					}
+					
+					if(n.getEspecia()<precio){
+						
+						devolucion=-3;
+					//esto puede faltarle algo	
+					
+					}else if(devolucion>=0){
+						
+						n.paga(precio);
+						
+						especia=especia+precio;
+						pasaje[posicion]=n;
+						devolucion=posicion;
+						
+					}
+				}
+			}
+			
+			
+			
+			
+		}
+		
+		return devolucion;
+		
+	}
+
+	
+	//done
+	public boolean solicitudAdmision(Tripulante n){
+		boolean devolucion=false;
+		boolean hay_sitio=false;
+		int posicion=0;
+		
+		for (int i = 0; i < tripulacion.length; i++) {
+			if(tripulacion[i]==null){
+				hay_sitio=true;
+				posicion=i;
+				i=tripulacion.length;
+			}
+		}
+		if(n!=null){
+			
+			if(n.enrolado()==false && n.getPasaje()==-1){
+				
+				if(n.getRango().equalsIgnoreCase("Superior")){
+					if((this.numSuperiores()+1)*3<=this.numSubalternos()){
+						if(hay_sitio){
+							devolucion=true;
+							tripulacion[posicion]=n;
+							n.setConexion(this);
+						}
+					}
+				}else{
+					if(hay_sitio){
+						tripulacion[posicion]=n;
+						n.setConexion(this);
+						devolucion=true;
+					}
+				}
+			
+			}
+		}
+		return devolucion;	
+	}
+		
+	
+	
+	
+	//done
+	public boolean solicitudDimision(double d,Tripulante n){
+		boolean devolucion=false;
+		
+			if(n!=null){
+				for (int i = 0; i < tripulacion.length; i++) {
+					if(tripulacion[i].iguales(n)){
+						especia=especia+tripulacion[i].getEspecia();
+						tripulacion[i].setConexion(null);
+						tripulacion[i]=null;
+						devolucion=true;
+					}
+				}
+				
+			}
+		return devolucion;
+	}
+	
+	
+	//done
+	public boolean desembarque(int i,Navegante n){
+		boolean devolucion=false;
+		
+		if(n!=null){
+			if(i<pasaje.length){
+				if(pasaje[i].iguales(n)){
+					pasaje[i]=null;
+					devolucion=true;
+				}
+			}
+			
+		}
+		return devolucion;
+	}
+	
+	
+	//todo
+	public void repostaje(){
+		
+		for (int i = 0; i < tripulacion.length; i++) {
+			if(tripulacion[i]!=null){
+				especia=especia+tripulacion[i].cobra();
+			}
+		}
+	}
+	
+	
+	//done
+	public boolean viaja(Galaxia g,Coordenada c){
+		boolean devolucion = false;
+		double distancia=0;
+		
+		if(g!=null){
+			if(c!=null){
+				
+				distancia= Math.pow(posicion.getCoordenadas()[0]-c.getCoordenadas()[0], 2)+Math.pow(posicion.getCoordenadas()[1]-c.getCoordenadas()[1], 2)+Math.pow(posicion.getCoordenadas()[2]-c.getCoordenadas()[2],2);
+				distancia=Math.sqrt(distancia);
+				if(mapa!=null){
+					//es la misma galaxia a donde quiere ir
+					if(mapa.iguales(g)){
+						if(distancia/especia>=especia){
+							especia=especia-distancia;
+							posicion=c;
+							mapa=g;
+							devolucion=true;
+						}
+					
+					//viaje intergalactico
+					}else{
+						distancia=distancia*(Math.abs(mapa.getSectores()-g.getSectores()));
+						if(distancia/especia>=especia){
+							especia=especia-distancia;
+							posicion=c;
+							mapa=g;
+							devolucion=true;
+						}
+					}
+				
+				//no tiene mapa, el numero de sectores se considera 0
+				}else{
+					distancia=distancia*(Math.abs(0-g.getSectores()));
+					if(distancia/especia>=especia){
+						especia=especia-distancia;
+						posicion=c;
+						mapa=g;
+						devolucion=true;
+					}
+				}
+				
+			}
+		}
+		
+		return devolucion;
+	}
+	
+	
+	//done
+	public int verifica(Navegante n){
+		int devolucion=-1;
+		boolean espacio_libre=false;
+		
+		for (int i = 0; i < pasaje.length; i++) {
+
+			if(pasaje[i]==null){
+				espacio_libre=true;
+				devolucion=i;
+			}
+		}
+		
+		if(!espacio_libre){
+			devolucion=-1;
+		}
+		
+		return devolucion;
+	}
+	
+	
+	//done
+	public double getEspecia(){
+		return especia;
+	}
+	
+	
+	//done
+	public Navegante[] getPasaje(){
+		return pasaje;
+	}
+	
+	
+	//done
+	public Tripulante[] getTripulacion(){
+		return tripulacion;
+	}
+	
+	
+	//done
+	public Coordenada getPosicion(){
+		return posicion;
+	}
+	
+	
+	//done
+	public static void setMapa(){
+		mapa=getGalaxia();
+	}
+	
+	
+	//done
+	public int getNumNavegantes(){
+		int devolucion=0;
+		for (int i = 0; i < pasaje.length; i++) {
+			if(pasaje[i]!=null){
+				devolucion=devolucion+1;
+			}
+		}
+		return devolucion;
+	}
+	
+	
+	//done
+	public int numSuperiores(){
+		int devolucion=0;
+		
+		for (int i = 0; i < tripulacion.length; i++) {
+			if(tripulacion[i]!=null && tripulacion[i].getRango().equalsIgnoreCase("superior")){
+				devolucion=devolucion+1;
+			}
+		}
+		return devolucion;
+	}
+
+	
+	//done
+	public int numSubalternos(){
+		int devolucion=0;
+		
+		for (int i = 0; i < tripulacion.length; i++) {
+			if(tripulacion[i]!=null && tripulacion[i].getRango().equalsIgnoreCase("subalterno")){
+				devolucion=devolucion+1;
+			}
+		}
+		return devolucion;
+	}
+	
+	
+	
+	public void setPasaje(Navegante n,int i){
+		pasaje[i]=n;
+	}
+	
+	
+	
+	public void setBodega(Mercancia m, int i){
+		Mercancia[] bodega;
+		bodega=new Mercancia[super.getBodegaLength()];
+		bodega=super.getBodega();
+
+		bodega[i]=m;
+	}
+	
+	public void prueba(Romskip r, Mercancia m){
+		
+	}
+
+}
